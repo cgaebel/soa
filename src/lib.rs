@@ -315,6 +315,13 @@ impl<A, B> Soa2<A, B> {
         }
     }
 
+    pub fn from_iters<I0, I1>(i0: I0, i1: I1) -> Soa2<A, B>
+        where I0: Iterator<Item=A>, I1: Iterator<Item=B> {
+        let mut v = Soa2::new();
+        v.extend(i0, i1);
+        v
+    }
+
     // TODO: dedup
 }
 
