@@ -1,6 +1,7 @@
 #![feature(alloc)]
 #![feature(collections)]
 #![feature(core)]
+#![feature(hash)]
 
 #![feature(unsafe_destructor)]
 
@@ -9,7 +10,8 @@ extern crate collections;
 extern crate core;
 
 use collections::vec;
-use core::iter;
+use core::hash::{self, Hash};
+use core::iter::{self, repeat};
 use core::mem;
 use core::num::Int;
 use core::ptr;
@@ -79,6 +81,11 @@ impl<A, B> Soa2<A, B> {
     #[inline]
     pub fn len(&self) -> usize {
         self.e.len
+    }
+
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     #[inline]
@@ -287,6 +294,100 @@ impl<A, B> Soa2<A, B> {
 
             unadorned::append_update(&[d0u, d1u], &mut self.e, &mut other.e, space);
         }
+    }
+
+    // TODO: drain
+
+    #[inline]
+    pub fn clear(&mut self) {
+        self.truncate(0);
+    }
+
+    // TODO: map_in_place
+
+    pub fn extend<I0, I1>(&mut self, i0: I0, i1: I1)
+        where I0: Iterator<Item=A>, I1: Iterator<Item=B> {
+        unsafe {
+            let d0u = self.d0.extend(&self.e, i0);
+            let d1u = self.d1.extend(&self.e, i1);
+
+            unadorned::extend_update(&[d0u, d1u], &mut self.e);
+        }
+    }
+
+    // TODO: dedup
+}
+
+impl<A: Clone, B: Clone> Soa2<A, B> {
+    #[inline]
+    pub fn resize(&mut self, new_len: usize, value: (A, B)) {
+        let len = self.len();
+
+        if new_len > len {
+            self.extend(repeat(value.0).take(new_len - len), repeat(value.1).take(new_len - len));
+        } else {
+            self.truncate(new_len);
+        }
+    }
+
+    #[inline]
+    pub fn push_all(&mut self, x0: &[A], x1: &[B]) {
+        unsafe {
+            assert_eq!(x0.len(), x1.len());
+
+            let space = unadorned::calc_reserve_space(&self.e, x0.len());
+
+            let d0u = self.d0.push_all(x0, &self.e, &space);
+            let d1u = self.d1.push_all(x1, &self.e, &space);
+
+            unadorned::push_all_update(&[d0u, d1u], &mut self.e, x0.len(), space);
+        }
+    }
+}
+
+impl<A: Clone, B: Clone> Clone for Soa2<A, B> {
+    #[inline]
+    fn clone(&self) -> Soa2<A, B> {
+        let mut ret = Soa2::new();
+        let (d0, d1) = self.as_slices();
+        ret.push_all(d0, d1);
+        ret
+    }
+
+    fn clone_from(&mut self, other: &Soa2<A, B>) {
+        // TODO: cleanup
+
+        if self.len() > other.len() {
+            self.truncate(other.len());
+        }
+
+        let (od0, od1) = other.as_slices();
+
+        let (s0, s1) = {
+            let (sd0, sd1) = self.as_mut_slices();
+
+            for (place, thing) in sd0.iter_mut().zip(od0.iter()) {
+                place.clone_from(thing);
+            }
+
+            for (place, thing) in sd1.iter_mut().zip(od1.iter()) {
+                place.clone_from(thing);
+            }
+
+            let s0 = &od0[sd0.len()..];
+            let s1 = &od1[sd1.len()..];
+
+            (s0, s1)
+        };
+
+        self.push_all(s0, s1);
+    }
+}
+
+impl<S: hash::Writer + hash::Hasher, A: Hash<S>, B: Hash<S>> Hash<S> for Soa2<A, B> {
+    #[inline]
+    fn hash(&self, state: &mut S) {
+        self.as_slices().hash(state)
     }
 }
 

@@ -8,6 +8,7 @@ use core::ptr;
 use core::slice;
 use core::usize;
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct Extent {
     pub len: usize,
     pub cap: usize,
@@ -181,6 +182,32 @@ pub fn append_update(_: &[AppendUpdate], e: &mut Extent, other_e: &mut Extent, s
     other_e.len = 0;
 }
 
+#[must_use]
+struct PushAllUpdate;
+
+#[inline]
+pub fn push_all_update(_: &[PushAllUpdate], e: &mut Extent, len: usize, space: Option<ReserveCalc>) {
+    e.len += len;
+    space.map(|calc| { e.cap = calc.0 });
+}
+
+#[must_use]
+#[derive(Debug)]
+struct ExtendUpdate(Extent);
+
+pub fn extend_update(extents: &[ExtendUpdate], e: &mut Extent) {
+    let first_ext = extents[0].0;
+
+    if extents.iter().any(|e| e.0 != first_ext) {
+        // TODO: Clean up the excess elements added. This is a little tricky, since
+        // the pointers need to be passed to extend_update, without slowing down
+        // the fast path.
+        panic!("`extend` called with iterators with unequal size: {:?}. Memory has been leaked!", extents);
+    }
+
+    *e = first_ext;
+}
+
 pub struct Unadorned<T> {
     ptr: NonZero<*mut T>,
 }
@@ -334,10 +361,38 @@ impl<T> Unadorned<T> {
         AppendUpdate
     }
 
+    pub unsafe fn extend<I: Iterator<Item=T>>(&mut self, e: &Extent, mut i: I) -> ExtendUpdate {
+        let mut this_extent: Extent = *e;
+
+        for x in i {
+            let u = self.push(x, e);
+            push_update(&[u], &mut this_extent);
+        }
+
+        ExtendUpdate(this_extent)
+    }
+
     pub unsafe fn drop(&self, e: &Extent) {
         for x in self.as_slice(e.len).iter() {
             drop(ptr::read(x));
         }
         dealloc(*self.ptr, e.cap);
+    }
+}
+
+impl<T: Clone> Unadorned<T> {
+    pub unsafe fn push_all(&mut self, x: &[T], e: &Extent, space: &Option<ReserveCalc>) -> PushAllUpdate {
+        space.as_ref().map(|space| self.reserve(e, space));
+
+        let mut len = e.len;
+
+        for i in range(0, x.len()) {
+            // LLVM is easily confused. This is carefully constructed such that
+            // Copy types get a memcpy.
+            ptr::write(self.ptr.offset(len as isize), x.get_unchecked(i).clone());
+            len += 1;
+        }
+
+        PushAllUpdate
     }
 }
