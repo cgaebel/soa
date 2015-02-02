@@ -14,4 +14,4 @@ keywords = [ "soa", "columnar" ]
 
 license = "MIT"
 
-description = "A contiguous region of bytes, useful for I/O operations."
+description = "Struct-of-Array vector types"
