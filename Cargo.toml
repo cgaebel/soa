@@ -3,3 +3,15 @@
 name = "soa"
 version = "0.0.1"
 authors = ["Clark Gaebel <cg.wowus.cg@gmail.com>"]
+
+documentation = "http://www.rust-ci.org/cgaebel/soa/doc/soa/"
+homepage = "https://github.com/cgaebel/soa"
+repository = "https://github.com/cgaebel/soa"
+
+readme = "README.md"
+
+keywords = [ "soa", "columnar" ]
+
+license = "MIT"
+
+description = "A contiguous region of bytes, useful for I/O operations."
