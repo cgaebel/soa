@@ -95,6 +95,7 @@ pub fn from_raw_bufs_update(_: &[FromRawBufsUpdate], elts: usize) -> Extent {
 }
 
 #[must_use]
+#[derive(Clone)]
 struct ReserveCalc(usize);
 
 #[inline]
@@ -361,11 +362,16 @@ impl<T> Unadorned<T> {
         AppendUpdate
     }
 
-    pub unsafe fn extend<I: Iterator<Item=T>>(&mut self, e: &Extent, mut i: I) -> ExtendUpdate {
+    pub unsafe fn extend<I: Iterator<Item=T>>(&mut self, e: &Extent, space: &Option<ReserveCalc>, mut i: I) -> ExtendUpdate {
         let mut this_extent: Extent = *e;
 
+        space.as_ref().map(|space| {
+            let ru = self.reserve(e, space);
+            reserve_update(&[ru], (*space).clone(), &mut this_extent);
+        });
+
         for x in i {
-            let u = self.push(x, e);
+            let u = self.push(x, &this_extent);
             push_update(&[u], &mut this_extent);
         }
 

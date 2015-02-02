@@ -1,7 +1,10 @@
+#![allow(unused_features)]
+
 #![feature(alloc)]
 #![feature(collections)]
 #![feature(core)]
 #![feature(hash)]
+#![feature(test)]
 
 #![feature(unsafe_destructor)]
 
@@ -9,7 +12,13 @@ extern crate alloc;
 extern crate collections;
 extern crate core;
 
+#[cfg(test)] extern crate test;
+
 use collections::vec;
+
+use core::cmp::Ordering;
+use core::default::Default;
+use core::fmt::{Debug, Formatter, Result};
 use core::hash::{self, Hash};
 use core::iter::{self, repeat};
 use core::mem;
@@ -308,8 +317,11 @@ impl<A, B> Soa2<A, B> {
     pub fn extend<I0, I1>(&mut self, i0: I0, i1: I1)
         where I0: Iterator<Item=A>, I1: Iterator<Item=B> {
         unsafe {
-            let d0u = self.d0.extend(&self.e, i0);
-            let d1u = self.d1.extend(&self.e, i1);
+            let (lower, _) = i0.size_hint();
+            let space = unadorned::calc_reserve_space(&self.e, lower);
+
+            let d0u = self.d0.extend(&self.e, &space, i0);
+            let d1u = self.d1.extend(&self.e, &space, i1);
 
             unadorned::extend_update(&[d0u, d1u], &mut self.e);
         }
@@ -398,6 +410,102 @@ impl<S: hash::Writer + hash::Hasher, A: Hash<S>, B: Hash<S>> Hash<S> for Soa2<A,
     }
 }
 
+impl<A0, B0, A1, B1> PartialEq<Soa2<A1, B1>> for Soa2<A0, B0>
+  where A0: PartialEq<A1>, B0: PartialEq<B1> {
+    #[inline]
+    fn eq(&self, other: &Soa2<A1, B1>) -> bool {
+        let (a0, b0) = self.as_slices();
+        let (a1, b1) = other.as_slices();
+
+        PartialEq::eq(a0, a1) && PartialEq::eq(b0, b1)
+    }
+
+    #[inline]
+    fn ne(&self, other: &Soa2<A1, B1>) -> bool {
+        let (a0, b0) = self.as_slices();
+        let (a1, b1) = other.as_slices();
+
+        PartialEq::ne(a0, a1) || PartialEq::ne(b0, b1)
+    }
+}
+
+impl<A0, B0, A1, B1> PartialEq<Vec<(A1, B1)>> for Soa2<A0, B0>
+  where A0: PartialEq<A1>, B0: PartialEq<B1> {
+    #[inline]
+    fn eq(&self, other: &Vec<(A1, B1)>) -> bool {
+        self.len() == other.len()
+        && self.iter().zip(other.iter()).all(
+            |((a0, b0), &(ref a1, ref b1))| a0 == a1 && b0 == b1)
+    }
+
+    #[inline]
+    fn ne(&self, other: &Vec<(A1, B1)>) -> bool {
+        self.len() != other.len()
+        || self.iter().zip(other.iter()).any(
+            |((a0, b0), &(ref a1, ref b1))| a0 != a1 || b0 != b1)
+    }
+}
+
+impl<'b, A0, B0, A1, B1> PartialEq<&'b [(A1, B1)]> for Soa2<A0, B0>
+  where A0: PartialEq<A1>, B0: PartialEq<B1> {
+    #[inline]
+    fn eq(&self, other: &&'b [(A1, B1)]) -> bool {
+        self.len() == other.len()
+        && self.iter().zip(other.iter()).all(
+            |((a0, b0), &(ref a1, ref b1))| a0 == a1 && b0 == b1)
+    }
+
+    #[inline]
+    fn ne(&self, other: &&'b [(A1, B1)]) -> bool {
+        self.len() != other.len()
+        || self.iter().zip(other.iter()).any(
+            |((a0, b0), &(ref a1, ref b1))| a0 != a1 || b0 != b1)
+    }
+}
+
+impl<'b, A0, B0, A1, B1> PartialEq<&'b mut [(A1, B1)]> for Soa2<A0, B0>
+  where A0: PartialEq<A1>, B0: PartialEq<B1> {
+    #[inline]
+    fn eq(&self, other: &&'b mut [(A1, B1)]) -> bool {
+        self.len() == other.len()
+        && self.iter().zip(other.iter()).all(
+            |((a0, b0), &(ref a1, ref b1))| a0 == a1 && b0 == b1)
+    }
+
+    #[inline]
+    fn ne(&self, other: &&'b mut [(A1, B1)]) -> bool {
+        self.len() != other.len()
+        || self.iter().zip(other.iter()).any(
+            |((a0, b0), &(ref a1, ref b1))| a0 != a1 || b0 != b1)
+    }
+}
+
+impl<A: PartialOrd, B: PartialOrd> PartialOrd for Soa2<A, B> {
+    #[inline]
+    fn partial_cmp(&self, other: &Soa2<A, B>) -> Option<Ordering> {
+        iter::order::partial_cmp(self.iter(), other.iter())
+    }
+}
+
+impl<A: Eq, B: Eq> Eq for Soa2<A, B> {}
+
+impl<A: Ord, B: Ord> Ord for Soa2<A, B> {
+    #[inline]
+    fn cmp(&self, other: &Soa2<A, B>) -> Ordering {
+        iter::order::cmp(self.iter(), other.iter())
+    }
+}
+
+impl<A, B> Default for Soa2<A, B> {
+    fn default() -> Soa2<A, B> { Soa2::new() }
+}
+
+impl<A: Debug, B: Debug> Debug for Soa2<A, B> {
+    fn fmt(&self, f: &mut Formatter) -> Result {
+        Debug::fmt(&self.as_slices(), f)
+    }
+}
+
 #[unsafe_destructor]
 impl<A, B> Drop for Soa2<A, B> {
     #[inline]
@@ -408,5 +516,95 @@ impl<A, B> Drop for Soa2<A, B> {
                 self.d1.drop(&self.e);
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Soa2;
+
+    struct DropCounter<'a> {
+        count: &'a mut i32,
+    }
+
+    #[unsafe_destructor]
+    impl<'a> Drop for DropCounter<'a> {
+        fn drop(&mut self) {
+            *self.count += 1;
+        }
+    }
+
+    #[test]
+    fn test_double_drop() {
+        struct TwoVec<T> {
+            x: Soa2<T, T>,
+            y: Soa2<T, T>,
+        }
+
+        let (mut c0, mut c1, mut c2, mut c3) = (0, 0, 0, 0);
+
+        {
+            let mut tv =
+                TwoVec {
+                    x: Soa2::new(),
+                    y: Soa2::new(),
+                };
+
+            tv.x.push(
+                (DropCounter { count: &mut c0 },
+                 DropCounter { count: &mut c1 }));
+            tv.y.push(
+                (DropCounter { count: &mut c2 },
+                 DropCounter { count: &mut c3 }));
+
+            drop(tv.x);
+        }
+
+        assert_eq!(c0, 1);
+        assert_eq!(c1, 1);
+        assert_eq!(c2, 1);
+        assert_eq!(c3, 1);
+    }
+
+    #[test]
+    fn test_reserve() {
+        let mut v = Soa2::new();
+        assert_eq!(v.capacity(), 0);
+
+        v.reserve(2);
+        assert!(v.capacity() >= 2);
+
+        for i in range(0is, 16) {
+            v.push((i, i));
+        }
+
+        assert!(v.capacity() >= 16);
+        v.reserve(16);
+        assert!(v.capacity() >= 32);
+
+        v.push((16, 16));
+
+        v.reserve(16);
+        assert!(v.capacity() >= 33);
+    }
+
+    #[test]
+    fn test_extend() {
+        let mut v = Soa2::new();
+        let mut w = Soa2::new();
+
+        v.extend(range(0is, 3), range(4is, 7));
+        for i in range(0is, 3).zip(range(4is, 7)) {
+            w.push(i);
+        }
+
+        assert_eq!(v, w);
+
+        v.extend(range(3is, 10), range(7is, 14));
+        for i in range(3is, 10).zip(range(7is, 14)) {
+            w.push(i);
+        }
+
+        assert_eq!(v, w);
     }
 }
