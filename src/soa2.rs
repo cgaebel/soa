@@ -354,6 +354,8 @@ impl<A, B> Soa2<A, B> {
     /// Panics if `index` is out of bounds.
     pub fn remove(&mut self, index: usize) -> (A, B) {
         unsafe {
+            assert!(index < self.e.len);
+
             let (x0, d0u) = self.d0.remove(index, &self.e);
             let (x1, d1u) = self.d1.remove(index, &self.e);
 

@@ -337,8 +337,6 @@ impl<T> Unadorned<T> {
     }
 
     pub unsafe fn remove(&mut self, index: usize, e: &Extent) -> (T, RemoveUpdate) {
-        assert!(index < e.len);
-
         let ptr = self.ptr.offset(index as isize);
         let ret = ptr::read(ptr);
         ptr::copy_memory(ptr, &*ptr.offset(1), e.len - index - 1);
