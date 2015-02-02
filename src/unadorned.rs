@@ -248,6 +248,11 @@ impl<T> Unadorned<T> {
         }, FromRawPartsUpdate)
     }
 
+    #[inline]
+    pub unsafe fn as_vec(&self, e: &Extent) -> Vec<T> {
+        Vec::from_raw_parts(*self.ptr, e.len, e.cap)
+    }
+
     pub unsafe fn from_raw_bufs(src: *const T, elts: usize) -> (Unadorned<T>, FromRawBufsUpdate) {
         let dst = my_alloc::<T>(elts);
         ptr::copy_nonoverlapping_memory(*dst, src, elts);
@@ -256,6 +261,7 @@ impl<T> Unadorned<T> {
         }, FromRawBufsUpdate)
     }
 
+    #[inline]
     pub unsafe fn reserve(&mut self, e: &Extent, space_needed: &ReserveCalc) -> ReserveUpdate {
         let old_cap = e.cap;
         let new_cap = space_needed.0;
@@ -288,10 +294,12 @@ impl<T> Unadorned<T> {
         ShrinkToFitUpdate
     }
 
-    pub unsafe fn truncate(&mut self, mut real_len: usize, e: &Extent) -> TruncateUpdate {
+    pub unsafe fn truncate(&mut self, len: usize, e: &Extent) -> TruncateUpdate {
         if self.is_boring() { return TruncateUpdate }
 
-        while e.len < real_len {
+        let mut real_len = e.len;
+
+        while len < real_len {
             real_len -= 1;
             ptr::read(self.ptr.offset(real_len as isize));
         }
@@ -346,6 +354,7 @@ impl<T> Unadorned<T> {
         self.ptr = alloc_or_realloc(*self.ptr, old_size, size);
     }
 
+    #[inline]
     pub unsafe fn push(&mut self, value: T, e: &Extent) -> PushUpdate {
         if e.len == e.cap {
             self.make_room_for_one(e);
@@ -355,6 +364,7 @@ impl<T> Unadorned<T> {
         PushUpdate
     }
 
+    #[inline]
     pub unsafe fn append(&mut self, self_e: &Extent, other: &Self, other_e: &Extent, space: &Option<ReserveCalc>) -> AppendUpdate {
         space.as_ref().map(|space| self.reserve(self_e, space));
         ptr::copy_nonoverlapping_memory(*self.ptr, *other.ptr, other_e.len);
@@ -387,6 +397,7 @@ impl<T> Unadorned<T> {
 }
 
 impl<T: Clone> Unadorned<T> {
+    #[inline]
     pub unsafe fn push_all(&mut self, x: &[T], e: &Extent, space: &Option<ReserveCalc>) -> PushAllUpdate {
         space.as_ref().map(|space| self.reserve(e, space));
 
