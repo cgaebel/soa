@@ -16,7 +16,7 @@ use unadorned::{self, Unadorned, Extent};
 ///
 /// This structure is analogous to a `Vec<(A, B, C, D)>`, but instead of laying out
 /// the tuples sequentially in memory, each row gets its own allocation. For
-/// example, an `Soa4<f32, i64, u8, u16>` will contain three inner arrays: one of
+/// example, an `Soa4<f32, i64, u8, u16>` will contain four inner arrays: one of
 /// `f32`s, one of `i64`s, one of `u8`, and one of `u16`.
 #[unsafe_no_drop_flag]
 pub struct Soa4<A, B, C, D> {

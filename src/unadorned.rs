@@ -253,6 +253,16 @@ impl<T> Unadorned<T> {
         Vec::from_raw_parts(*self.ptr, e.len, e.cap)
     }
 
+    #[inline]
+    pub fn as_ptr(&self) -> *const T {
+        *self.ptr as *const T
+    }
+
+    #[inline]
+    pub fn as_mut_ptr(&mut self) -> *mut T {
+        *self.ptr
+    }
+
     pub unsafe fn from_raw_bufs(src: *const T, elts: usize) -> (Unadorned<T>, FromRawBufsUpdate) {
         let dst = my_alloc::<T>(elts);
         ptr::copy_nonoverlapping_memory(*dst, src, elts);
@@ -370,7 +380,7 @@ impl<T> Unadorned<T> {
         AppendUpdate
     }
 
-    pub unsafe fn extend<I: Iterator<Item=T>>(&mut self, e: &Extent, space: &Option<ReserveCalc>, mut i: I) -> ExtendUpdate {
+    pub unsafe fn extend<I: Iterator<Item=T>>(&mut self, e: &Extent, space: &Option<ReserveCalc>, i: I) -> ExtendUpdate {
         let mut this_extent: Extent = *e;
 
         space.as_ref().map(|space| {
@@ -387,7 +397,7 @@ impl<T> Unadorned<T> {
     }
 
     pub unsafe fn drop(&self, e: &Extent) {
-        for x in self.as_slice(e.len).iter() {
+        for x in self.as_slice(e.len) {
             drop(ptr::read(x));
         }
         dealloc(*self.ptr, e.cap);
