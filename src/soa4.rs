@@ -296,7 +296,7 @@ impl<A, B, C, D> Soa4<A, B, C, D> {
 
     /// Returns a single iterator over the SoA's elements, zipped up.
     #[inline]
-    pub fn zip_iter<'a>(&'a self) -> iter::Map<(((&A, &B), &C), &D), (&A, &B, &C, &D), iter::Zip<iter::Zip<iter::Zip<slice::Iter<'a, A>, slice::Iter<'a, B>>, slice::Iter<'a, C>>, slice::Iter<'a, D>>, fn((((&'a A, &'a B), &'a C), &'a D)) -> (&'a A, &'a B, &'a C, &'a D)> {
+    pub fn zip_iter<'a>(&'a self) -> iter::Map<iter::Zip<iter::Zip<iter::Zip<slice::Iter<'a, A>, slice::Iter<'a, B>>, slice::Iter<'a, C>>, slice::Iter<'a, D>>, fn((((&'a A, &'a B), &'a C), &'a D)) -> (&'a A, &'a B, &'a C, &'a D)> {
         let (d0, d1, d2, d3) = self.iters();
         fn repack<A, B, C, D>((((w, x), y), z): (((A, B), C), D)) -> (A, B, C, D) { (w, x, y, z) }
         let repack: fn((((&'a A, &'a B), &'a C), &'a D)) -> (&'a A, &'a B, &'a C, &'a D) = repack;
@@ -312,7 +312,7 @@ impl<A, B, C, D> Soa4<A, B, C, D> {
 
     /// Returns a single iterator over the SoA's elements, zipped up.
     #[inline]
-    pub fn zip_iter_mut<'a>(&'a mut self) -> iter::Map<(((&mut A, &mut B), &mut C), &mut D), (&mut A, &mut B, &mut C, &mut D), iter::Zip<iter::Zip<iter::Zip<slice::IterMut<'a, A>, slice::IterMut<'a, B>>, slice::IterMut<'a, C>>, slice::IterMut<'a, D>>, fn((((&'a mut A, &'a mut B), &'a mut C), &'a mut D)) -> (&'a mut A, &'a mut B, &'a mut C, &'a mut D)> {
+    pub fn zip_iter_mut<'a>(&'a mut self) -> iter::Map<iter::Zip<iter::Zip<iter::Zip<slice::IterMut<'a, A>, slice::IterMut<'a, B>>, slice::IterMut<'a, C>>, slice::IterMut<'a, D>>, fn((((&'a mut A, &'a mut B), &'a mut C), &'a mut D)) -> (&'a mut A, &'a mut B, &'a mut C, &'a mut D)> {
         let (d0, d1, d2, d3) = self.iters_mut();
         fn repack<A, B, C, D>((((w, x), y), z): (((A, B), C), D)) -> (A, B, C, D) { (w, x, y, z) }
         let repack: fn((((&'a mut A, &'a mut B), &'a mut C), &'a mut D)) -> (&'a mut A, &'a mut B, &'a mut C, &'a mut D) = repack;
@@ -348,15 +348,19 @@ impl<A, B, C, D> Soa4<A, B, C, D> {
     /// Returns to the start of the data in an SoA.
     #[inline]
     pub fn as_ptrs(&self) -> (*const A, *const B, *const C, *const D) {
-        let (d0, d1, d2, d3) = self.as_slices();
-        (d0.as_ptr(), d1.as_ptr(), d2.as_ptr(), d3.as_ptr())
+        (self.d0.as_ptr(),
+         self.d1.as_ptr(),
+         self.d2.as_ptr(),
+         self.d3.as_ptr())
     }
 
     /// Returns a pair of pointers to the start of the mutable data in an SoA.
     #[inline]
     pub fn as_mut_ptrs(&mut self) -> (*mut A, *mut B, *mut C, *mut D) {
-        let (d0, d1, d2, d3) = self.as_mut_slices();
-        (d0.as_mut_ptr(), d1.as_mut_ptr(), d2.as_mut_ptr(), d3.as_mut_ptr())
+        (self.d0.as_mut_ptr(),
+         self.d1.as_mut_ptr(),
+         self.d2.as_mut_ptr(),
+         self.d3.as_mut_ptr())
     }
 
     /// Removes an element from anywhere in the SoA and returns it, replacing it

@@ -303,15 +303,13 @@ impl<A, B> Soa2<A, B> {
     /// Returns a pair of pointers to the start of the data in an SoA.
     #[inline]
     pub fn as_ptrs(&self) -> (*const A, *const B) {
-        let (d0, d1) = self.as_slices();
-        (d0.as_ptr(), d1.as_ptr())
+        (self.d0.as_ptr(), self.d1.as_ptr())
     }
 
     /// Returns a pair of pointers to the start of the mutable data in an SoA.
     #[inline]
     pub fn as_mut_ptrs(&mut self) -> (*mut A, *mut B) {
-        let (d0, d1) = self.as_mut_slices();
-        (d0.as_mut_ptr(), d1.as_mut_ptr())
+        (self.d0.as_mut_ptr(), self.d1.as_mut_ptr())
     }
 
     /// Removes an element from anywhere in the SoA and returns it, replacing it
