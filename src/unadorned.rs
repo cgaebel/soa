@@ -320,12 +320,12 @@ impl<T> Unadorned<T> {
     #[inline]
     pub unsafe fn as_slice<'a>(&'a self, len: usize) -> &'a [T] {
         let p: &'a *const T = mem::transmute(&*self.ptr);
-        slice::from_raw_buf(p, len)
+        slice::from_raw_parts(*p, len)
     }
 
     #[inline]
     pub unsafe fn as_mut_slice<'a>(&'a mut self, len: usize) -> &'a mut [T] {
-        slice::from_raw_mut_buf(&*self.ptr, len)
+        slice::from_raw_parts_mut(*self.ptr, len)
     }
 
     #[inline]
