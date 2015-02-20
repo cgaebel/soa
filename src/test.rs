@@ -51,7 +51,7 @@ fn test_reserve() {
     v.reserve(2);
     assert!(v.capacity() >= 2);
 
-    for i in range(0is, 16) {
+    for i in range(0, 16) {
         v.push((i, i));
     }
 
@@ -70,15 +70,15 @@ fn test_extend() {
     let mut v = Soa2::new();
     let mut w = Soa2::new();
 
-    v.extend(range(0is, 3), range(4is, 7));
-    for i in range(0is, 3).zip(range(4is, 7)) {
+    v.extend(range(0, 3), range(4, 7));
+    for i in range(0, 3).zip(range(4, 7)) {
         w.push(i);
     }
 
     assert_eq!(v, w);
 
-    v.extend(range(3is, 10), range(7is, 14));
-    for i in range(3is, 10).zip(range(7is, 14)) {
+    v.extend(range(3, 10), range(7, 14));
+    for i in range(3, 10).zip(range(7, 14)) {
         w.push(i);
     }
 
@@ -104,10 +104,10 @@ fn test_clone() {
 fn test_clone_from() {
     let mut v = Soa2::new();
     let mut three = Soa2::new();
-    let three_elems = [ Box::new(1is), Box::new(2), Box::new(3) ];
+    let three_elems = [ Box::new(1), Box::new(2), Box::new(3) ];
     three.push_all(&three_elems, &three_elems);
     let mut two = Soa2::new();
-    let two_elems = [ Box::new(4is), Box::new(5) ];
+    let two_elems = [ Box::new(4), Box::new(5) ];
     two.push_all(&two_elems, &two_elems);
 
     v.clone_from(&three);
@@ -129,7 +129,7 @@ fn test_retain() {
     let mut v = Soa2::new();
     v.push_all(&vs, &vs);
     v.retain(|(&x, _)| x % 2i32 == 0);
-    assert_eq!(v.as_slices(), (&[2, 4][], &[2, 4][]));
+    assert_eq!(v.as_slices(), (&[2, 4][..], &[2, 4][..]));
 }
 
 #[test]
@@ -167,11 +167,11 @@ fn test_zero_sized_values() {
 fn test_zip_unzip() {
     let (z1x, z1y) = ([ 1i32, 2, 3 ], [ 4i32, 5, 6 ]);
     let mut z1 = Soa2::new();
-    z1.push_all(&z1x[], &z1y[]);
+    z1.push_all(&z1x[..], &z1y[..]);
 
     let (left, right) = z1.into_vecs();
-    assert_eq!(&left[], &z1x[]);
-    assert_eq!(&right[], &z1y[]);
+    assert_eq!(&left[..], &z1x[..]);
+    assert_eq!(&right[..], &z1y[..]);
 }
 
 #[test]
@@ -180,12 +180,12 @@ fn test_unsafe_ptrs() {
         let a = [1i32, 2, 3];
         let ptr = a.as_ptr();
         let b = Soa2::from_raw_bufs(ptr, ptr, 3);
-        assert_eq!(b.as_slices(), (&[1, 2, 3][], &[1, 2, 3][]));
+        assert_eq!(b.as_slices(), (&[1, 2, 3][..], &[1, 2, 3][..]));
 
         let c = [1i32, 2, 3, 4, 5];
         let ptr = c.as_ptr();
         let d = Soa2::from_raw_bufs(ptr, ptr, 5);
-        assert_eq!(d.as_slices(), (&c[], &c[]));
+        assert_eq!(d.as_slices(), (&c[..], &c[..]));
     }
 }
 
@@ -202,8 +202,8 @@ fn test_vec_truncate_drop() {
 
     let mut v = Soa2::new();
     v.push_all(
-        &[Elem(1), Elem(2), Elem(3), Elem(4), Elem(5)][],
-        &[Elem(10), Elem(20), Elem(30), Elem(40), Elem(50)][]);
+        &[Elem(1), Elem(2), Elem(3), Elem(4), Elem(5)][..],
+        &[Elem(10), Elem(20), Elem(30), Elem(40), Elem(50)][..]);
 
     assert_eq!(unsafe { drops }, 10 + 0);
     v.truncate(3);

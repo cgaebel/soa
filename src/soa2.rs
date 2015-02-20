@@ -3,7 +3,7 @@ use collections::vec;
 use core::cmp::Ordering;
 use core::default::Default;
 use core::fmt::{Debug, Formatter, Result};
-use core::hash::{self, Hash};
+use core::hash::{Hash, Hasher};
 use core::iter::{self, repeat};
 use core::mem;
 use core::num::Int;
@@ -369,12 +369,12 @@ impl<A, B> Soa2<A, B> {
     /// elements.
     pub fn retain<F>(&mut self, mut f: F) where F: FnMut((&A, &B)) -> bool {
         let len = self.len();
-        let mut del = 0us;
+        let mut del = 0;
 
         {
             let (d0, d1) = self.as_mut_slices();
 
-            for i in range(0us, len) {
+            for i in range(0, len) {
                 if !f((&d0[i], &d1[i])) {
                     del += 1;
                 } else if del > 0 {
@@ -567,9 +567,9 @@ impl<A: Clone, B: Clone> Clone for Soa2<A, B> {
     }
 }
 
-impl<S: hash::Writer + hash::Hasher, A: Hash<S>, B: Hash<S>> Hash<S> for Soa2<A, B> {
+impl<A: Hash, B: Hash> Hash for Soa2<A, B> {
     #[inline]
-    fn hash(&self, state: &mut S) {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         self.as_slices().hash(state)
     }
 }

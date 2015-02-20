@@ -3,7 +3,7 @@ use collections::vec;
 use core::cmp::Ordering;
 use core::default::Default;
 use core::fmt::{Debug, Formatter, Result};
-use core::hash::{self, Hash};
+use core::hash::{Hash, Hasher};
 use core::iter::{self, repeat};
 use core::mem;
 use core::num::Int;
@@ -426,12 +426,12 @@ impl<A, B, C, D> Soa4<A, B, C, D> {
     /// elements.
     pub fn retain<F>(&mut self, mut f: F) where F: FnMut((&A, &B, &C, &D)) -> bool {
         let len = self.len();
-        let mut del = 0us;
+        let mut del = 0;
 
         {
             let (d0, d1, d2, d3) = self.as_mut_slices();
 
-            for i in range(0us, len) {
+            for i in range(0, len) {
                 if !f((&d0[i], &d1[i], &d2[i], &d3[i])) {
                     del += 1;
                 } else if del > 0 {
@@ -652,9 +652,9 @@ impl<A: Clone, B: Clone, C: Clone, D: Clone> Clone for Soa4<A, B, C, D> {
     }
 }
 
-impl<S: hash::Writer + hash::Hasher, A: Hash<S>, B: Hash<S>, C: Hash<S>, D: Hash<S>> Hash<S> for Soa4<A, B, C, D> {
+impl<A: Hash, B: Hash, C: Hash, D: Hash> Hash for Soa4<A, B, C, D> {
     #[inline]
-    fn hash(&self, state: &mut S) {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         self.as_slices().hash(state)
     }
 }
