@@ -265,7 +265,7 @@ impl<T> Unadorned<T> {
 
     pub unsafe fn from_raw_bufs(src: *const T, elts: usize) -> (Unadorned<T>, FromRawBufsUpdate) {
         let dst = my_alloc::<T>(elts);
-        ptr::copy_nonoverlapping_memory(*dst, src, elts);
+        ptr::copy_nonoverlapping(*dst, src, elts);
         (Unadorned {
             ptr: dst,
         }, FromRawBufsUpdate)
@@ -340,7 +340,7 @@ impl<T> Unadorned<T> {
         let _ = space_needed.as_ref().map(|space| self.reserve(e, space));
 
         let p = self.ptr.offset(index as isize);
-        ptr::copy_memory(p.offset(1), &*p, e.len - index);
+        ptr::copy(p.offset(1), &*p, e.len - index);
         ptr::write(&mut *p, x);
 
         InsertUpdate
@@ -349,7 +349,7 @@ impl<T> Unadorned<T> {
     pub unsafe fn remove(&mut self, index: usize, e: &Extent) -> (T, RemoveUpdate) {
         let ptr = self.ptr.offset(index as isize);
         let ret = ptr::read(ptr);
-        ptr::copy_memory(ptr, &*ptr.offset(1), e.len - index - 1);
+        ptr::copy(ptr, &*ptr.offset(1), e.len - index - 1);
         (ret, RemoveUpdate)
     }
 
@@ -375,7 +375,7 @@ impl<T> Unadorned<T> {
     #[inline]
     pub unsafe fn append(&mut self, self_e: &Extent, other: &Self, other_e: &Extent, space: &Option<ReserveCalc>) -> AppendUpdate {
         space.as_ref().map(|space| self.reserve(self_e, space));
-        ptr::copy_nonoverlapping_memory(*self.ptr, *other.ptr, other_e.len);
+        ptr::copy_nonoverlapping(*self.ptr, *other.ptr, other_e.len);
 
         AppendUpdate
     }

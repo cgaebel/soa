@@ -1,14 +1,8 @@
 use collections::vec;
 
-use core::cmp::Ordering;
-use core::default::Default;
-use core::fmt::{Debug, Formatter, Result};
-use core::hash::{Hash, Hasher};
-use core::iter::{self, repeat};
-use core::mem;
-use core::num::Int;
-use core::ptr;
-use core::slice;
+use core::cmp::Ordering; use core::default::Default; use core::fmt::{Debug,
+Formatter, Result}; use core::hash::{Hash, Hasher}; use core::iter::{self,
+repeat}; use core::mem; use core::num::Int; use core::ptr; use core::slice;
 
 use unadorned::{self, Unadorned, Extent};
 
