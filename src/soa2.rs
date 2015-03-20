@@ -368,7 +368,7 @@ impl<A, B> Soa2<A, B> {
         {
             let (d0, d1) = self.as_mut_slices();
 
-            for i in range(0, len) {
+            for i in 0..len {
                 if !f((&d0[i], &d1[i])) {
                     del += 1;
                 } else if del > 0 {

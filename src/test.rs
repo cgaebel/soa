@@ -51,7 +51,7 @@ fn test_reserve() {
     v.reserve(2);
     assert!(v.capacity() >= 2);
 
-    for i in range(0, 16) {
+    for i in 0..16 {
         v.push((i, i));
     }
 
@@ -70,15 +70,15 @@ fn test_extend() {
     let mut v = Soa2::new();
     let mut w = Soa2::new();
 
-    v.extend(range(0, 3), range(4, 7));
-    for i in range(0, 3).zip(range(4, 7)) {
+    v.extend(0..3, 4..7);
+    for i in (0..3).zip(4..7) {
         w.push(i);
     }
 
     assert_eq!(v, w);
 
-    v.extend(range(3, 10), range(7, 14));
-    for i in range(3, 10).zip(range(7, 14)) {
+    v.extend(3..10, 7..14);
+    for i in (3..10).zip(7..14) {
         w.push(i);
     }
 
@@ -213,7 +213,7 @@ fn test_vec_truncate_drop() {
 }
 
 #[test]
-#[should_fail]
+#[should_panic]
 fn test_swap_remove_empty() {
     let mut v: Soa2<i32, i32> = Soa2::new();
     v.swap_remove(0);

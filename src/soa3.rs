@@ -405,7 +405,7 @@ impl<A, B, C> Soa3<A, B, C> {
         {
             let (d0, d1, d2) = self.as_mut_slices();
 
-            for i in range(0, len) {
+            for i in 0..len {
                 if !f((&d0[i], &d1[i], &d2[i])) {
                     del += 1;
                 } else if del > 0 {

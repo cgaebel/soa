@@ -431,7 +431,7 @@ impl<A, B, C, D> Soa4<A, B, C, D> {
         {
             let (d0, d1, d2, d3) = self.as_mut_slices();
 
-            for i in range(0, len) {
+            for i in 0..len {
                 if !f((&d0[i], &d1[i], &d2[i], &d3[i])) {
                     del += 1;
                 } else if del > 0 {

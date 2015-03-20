@@ -2,7 +2,7 @@ use alloc::heap::{EMPTY, allocate, reallocate, deallocate};
 use collections::vec;
 use core::cmp::max;
 use core::mem;
-use core::num::{Int, UnsignedInt};
+use core::num::Int;
 use core::nonzero::NonZero;
 use core::ptr;
 use core::slice;
@@ -411,7 +411,7 @@ impl<T: Clone> Unadorned<T> {
 
         let mut len = e.len;
 
-        for i in range(0, x.len()) {
+        for i in 0..x.len() {
             // LLVM is easily confused. This is carefully constructed such that
             // Copy types get a memcpy.
             ptr::write(self.ptr.offset(len as isize), x.get_unchecked(i).clone());
