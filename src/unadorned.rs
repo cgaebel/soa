@@ -55,7 +55,7 @@ unsafe fn dealloc<A>(ptr: *mut A, cap: usize) {
 }
 
 #[must_use]
-struct NewUpdate;
+pub struct NewUpdate;
 
 #[inline]
 pub fn new_update(_: &[NewUpdate]) -> Extent {
@@ -63,7 +63,7 @@ pub fn new_update(_: &[NewUpdate]) -> Extent {
 }
 
 #[must_use]
-struct WithCapUpdate;
+pub struct WithCapUpdate;
 
 #[inline]
 pub fn with_capacity_update(_: &[WithCapUpdate], is_boring: bool, new_cap: usize) -> Extent {
@@ -79,7 +79,7 @@ pub fn with_capacity_update(_: &[WithCapUpdate], is_boring: bool, new_cap: usize
 }
 
 #[must_use]
-struct FromRawPartsUpdate;
+pub struct FromRawPartsUpdate;
 
 #[inline]
 pub fn from_raw_parts_update(_: &[FromRawPartsUpdate], len: usize, cap: usize) -> Extent {
@@ -87,7 +87,7 @@ pub fn from_raw_parts_update(_: &[FromRawPartsUpdate], len: usize, cap: usize) -
 }
 
 #[must_use]
-struct FromRawBufsUpdate;
+pub struct FromRawBufsUpdate;
 
 #[inline]
 pub fn from_raw_bufs_update(_: &[FromRawBufsUpdate], elts: usize) -> Extent {
@@ -96,7 +96,7 @@ pub fn from_raw_bufs_update(_: &[FromRawBufsUpdate], elts: usize) -> Extent {
 
 #[must_use]
 #[derive(Clone)]
-struct ReserveCalc(usize);
+pub struct ReserveCalc(usize);
 
 #[inline]
 pub fn calc_reserve_space(e: &Extent, additional: usize) -> Option<ReserveCalc> {
@@ -110,7 +110,7 @@ pub fn calc_reserve_space(e: &Extent, additional: usize) -> Option<ReserveCalc> 
 }
 
 #[must_use]
-struct ReserveUpdate;
+pub struct ReserveUpdate;
 
 #[inline]
 pub fn reserve_update(_: &[ReserveUpdate], calc: ReserveCalc, e: &mut Extent) {
@@ -128,7 +128,7 @@ pub fn calc_reserve_exact_space(e: &Extent, additional: usize) -> Option<Reserve
 }
 
 #[must_use]
-struct ShrinkToFitUpdate;
+pub struct ShrinkToFitUpdate;
 
 #[inline]
 pub fn shrink_to_fit_update(_: &[ShrinkToFitUpdate], e: &mut Extent) {
@@ -136,7 +136,7 @@ pub fn shrink_to_fit_update(_: &[ShrinkToFitUpdate], e: &mut Extent) {
 }
 
 #[must_use]
-struct TruncateUpdate;
+pub struct TruncateUpdate;
 
 #[inline]
 pub fn truncate_update(_: &[TruncateUpdate], new_len: usize, e: &mut Extent) {
@@ -144,7 +144,7 @@ pub fn truncate_update(_: &[TruncateUpdate], new_len: usize, e: &mut Extent) {
 }
 
 #[must_use]
-struct InsertUpdate;
+pub struct InsertUpdate;
 
 #[inline]
 pub fn insert_update(_: &[InsertUpdate], calc: Option<ReserveCalc>, e: &mut Extent) {
@@ -153,7 +153,7 @@ pub fn insert_update(_: &[InsertUpdate], calc: Option<ReserveCalc>, e: &mut Exte
 }
 
 #[must_use]
-struct RemoveUpdate;
+pub struct RemoveUpdate;
 
 #[inline]
 pub fn remove_update(_: &[RemoveUpdate], e: &mut Extent) {
@@ -161,7 +161,7 @@ pub fn remove_update(_: &[RemoveUpdate], e: &mut Extent) {
 }
 
 #[must_use]
-struct PushUpdate;
+pub struct PushUpdate;
 
 #[inline]
 pub fn push_update(_: &[PushUpdate], e: &mut Extent) {
@@ -173,7 +173,7 @@ pub fn push_update(_: &[PushUpdate], e: &mut Extent) {
 }
 
 #[must_use]
-struct AppendUpdate;
+pub struct AppendUpdate;
 
 #[inline]
 pub fn append_update(_: &[AppendUpdate], e: &mut Extent, other_e: &mut Extent, space: Option<ReserveCalc>) {
@@ -184,7 +184,7 @@ pub fn append_update(_: &[AppendUpdate], e: &mut Extent, other_e: &mut Extent, s
 }
 
 #[must_use]
-struct PushAllUpdate;
+pub struct PushAllUpdate;
 
 #[inline]
 pub fn push_all_update(_: &[PushAllUpdate], e: &mut Extent, len: usize, space: Option<ReserveCalc>) {
@@ -194,7 +194,7 @@ pub fn push_all_update(_: &[PushAllUpdate], e: &mut Extent, len: usize, space: O
 
 #[must_use]
 #[derive(Debug)]
-struct ExtendUpdate(Extent);
+pub struct ExtendUpdate(Extent);
 
 pub fn extend_update(extents: &[ExtendUpdate], e: &mut Extent) {
     let first_ext = extents[0].0;
