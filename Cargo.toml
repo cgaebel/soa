@@ -1,7 +1,7 @@
 [package]
 
 name = "soa"
-version = "0.9.1"
+version = "0.9.2"
 authors = ["Clark Gaebel <cg.wowus.cg@gmail.com>"]
 
 documentation = "http://www.rust-ci.org/cgaebel/soa/doc/soa/"
