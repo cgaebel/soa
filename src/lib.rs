@@ -1,11 +1,7 @@
-//! Growable struct-of-array types with heap allocated contents.
-#![allow(unused_features)]
-
+//! Growable struct-of-array types with 16-byte aligned heap allocated contents.
 #![feature(alloc)]
 #![feature(collections)]
 #![feature(core)]
-#![feature(hash)]
-#![feature(test)]
 
 #![feature(unsafe_no_drop_flag)]
 #![feature(filling_drop)]
