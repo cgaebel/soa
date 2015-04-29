@@ -6,7 +6,6 @@ use core::fmt::{Debug, Formatter, Result};
 use core::hash::{Hash, Hasher};
 use core::iter::{self, repeat};
 use core::mem;
-use core::num::Int;
 use core::ptr;
 use core::slice;
 
@@ -18,6 +17,9 @@ use unadorned::{self, Unadorned, Extent};
 /// the tuples sequentially in memory, each row gets its own allocation. For
 /// example, an `Soa3<f32, i64, u8>` will contain three inner arrays: one of
 /// `f32`s, one of `i64`s, and one of `u8`.
+///
+/// All data is aligned to 16-bytes. Feel free to do SIMD operations with array
+/// contents.
 #[unsafe_no_drop_flag]
 pub struct Soa3<A, B, C> {
     d0: Unadorned<A>,
@@ -716,16 +718,16 @@ impl<A: Debug, B: Debug, C: Debug> Debug for Soa3<A, B, C> {
     }
 }
 
-#[unsafe_destructor]
 impl<A, B, C> Drop for Soa3<A, B, C> {
     #[inline]
     fn drop(&mut self) {
-        if self.e.cap != 0 {
+        if self.e.cap != 0 && self.e.cap != mem::POST_DROP_USIZE {
             unsafe {
                 self.d0.drop(&self.e);
                 self.d1.drop(&self.e);
                 self.d2.drop(&self.e);
             }
+            self.e.cap = 0;
         }
     }
 }

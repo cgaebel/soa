@@ -2,19 +2,30 @@ use alloc::heap::{EMPTY, allocate, reallocate, deallocate};
 use collections::vec;
 use core::cmp::max;
 use core::mem;
-use core::num::Int;
 use core::nonzero::NonZero;
 use core::ptr;
 use core::slice;
 use core::usize;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Extent {
     pub len: usize,
     pub cap: usize,
 }
 
-impl Copy for Extent {}
+/// Rust has the wrong parameter order.
+/// > http://internals.rust-lang.org/t/memcpy-is-backwards/1797
+#[inline(always)]
+unsafe fn memcpy<T>(dst: *mut T, src: *const T, n: usize) {
+  ptr::copy_nonoverlapping(src, dst, n)
+}
+
+/// Rust has the wrong parameter order.
+/// > http://internals.rust-lang.org/t/memcpy-is-backwards/1797
+#[inline(always)]
+unsafe fn memmove<T>(dst: *mut T, src: *const T, n: usize) {
+  ptr::copy(src, dst, n)
+}
 
 fn byte_length_of<A>(capacity: usize) -> usize {
     mem::size_of::<A>().checked_mul(capacity).expect("capacity overflow")
@@ -24,7 +35,11 @@ unsafe fn my_alloc<A>(capacity: usize) -> NonZero<*mut A> {
     if mem::size_of::<A>() == 0 {
         NonZero::new(EMPTY as *mut A)
     } else {
-        let ptr = allocate(byte_length_of::<A>(capacity), mem::align_of::<A>());
+        let desired_alignment = mem::min_align_of::<A>();
+        assert!(desired_alignment.is_power_of_two());
+        assert!(desired_alignment <= 16);
+
+        let ptr = allocate(byte_length_of::<A>(capacity), 16);
         if ptr.is_null() { ::alloc::oom() }
         NonZero::new(ptr as *mut A)
     }
@@ -34,9 +49,9 @@ unsafe fn my_alloc<A>(capacity: usize) -> NonZero<*mut A> {
 unsafe fn alloc_or_realloc<A>(ptr: *mut A, old_size: usize, size: usize) -> NonZero<*mut A> {
     let ret =
         if old_size == 0 {
-            allocate(size, mem::min_align_of::<A>())
+            allocate(size, 16)
         } else {
-            reallocate(ptr as *mut u8, old_size, size, mem::min_align_of::<A>())
+            reallocate(ptr as *mut u8, old_size, size, 16)
         };
 
     if ret.is_null() { ::alloc::oom() }
@@ -48,10 +63,7 @@ unsafe fn alloc_or_realloc<A>(ptr: *mut A, old_size: usize, size: usize) -> NonZ
 unsafe fn dealloc<A>(ptr: *mut A, cap: usize) {
     if mem::size_of::<A>() == 0 { return }
 
-    deallocate(
-        ptr as *mut u8,
-        cap * mem::size_of::<A>(),
-        mem::min_align_of::<A>());
+    deallocate(ptr as *mut u8, cap * mem::size_of::<A>(), 16);
 }
 
 #[must_use]
@@ -265,7 +277,7 @@ impl<T> Unadorned<T> {
 
     pub unsafe fn from_raw_bufs(src: *const T, elts: usize) -> (Unadorned<T>, FromRawBufsUpdate) {
         let dst = my_alloc::<T>(elts);
-        ptr::copy_nonoverlapping(*dst, src, elts);
+        memcpy(*dst, src, elts);
         (Unadorned {
             ptr: dst,
         }, FromRawBufsUpdate)
@@ -340,7 +352,7 @@ impl<T> Unadorned<T> {
         let _ = space_needed.as_ref().map(|space| self.reserve(e, space));
 
         let p = self.ptr.offset(index as isize);
-        ptr::copy(p.offset(1), &*p, e.len - index);
+        memmove(p.offset(1), &*p, e.len - index);
         ptr::write(&mut *p, x);
 
         InsertUpdate
@@ -349,7 +361,7 @@ impl<T> Unadorned<T> {
     pub unsafe fn remove(&mut self, index: usize, e: &Extent) -> (T, RemoveUpdate) {
         let ptr = self.ptr.offset(index as isize);
         let ret = ptr::read(ptr);
-        ptr::copy(ptr, &*ptr.offset(1), e.len - index - 1);
+        memmove(ptr, &*ptr.offset(1), e.len - index - 1);
         (ret, RemoveUpdate)
     }
 

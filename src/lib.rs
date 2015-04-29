@@ -7,8 +7,8 @@
 #![feature(hash)]
 #![feature(test)]
 
-#![feature(unsafe_destructor)]
 #![feature(unsafe_no_drop_flag)]
+#![feature(filling_drop)]
 
 extern crate alloc;
 extern crate collections;

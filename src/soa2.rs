@@ -1,8 +1,13 @@
 use collections::vec;
 
-use core::cmp::Ordering; use core::default::Default; use core::fmt::{Debug,
-Formatter, Result}; use core::hash::{Hash, Hasher}; use core::iter::{self,
-repeat}; use core::mem; use core::num::Int; use core::ptr; use core::slice;
+use core::cmp::Ordering;
+use core::default::Default;
+use core::fmt::{Debug, Formatter, Result};
+use core::hash::{Hash, Hasher};
+use core::iter::{self, repeat};
+use core::mem;
+use core::ptr;
+use core::slice;
 
 use unadorned::{self, Unadorned, Extent};
 
@@ -12,6 +17,9 @@ use unadorned::{self, Unadorned, Extent};
 /// the tuples sequentially in memory, each row gets its own allocation. For
 /// example, an `Soa2<f32, i64>` will contain two inner arrays: one of `f32`s,
 /// and one of `i64`s.
+///
+/// All data is aligned to 16-bytes. Feel free to do SIMD operations with array
+/// contents.
 #[unsafe_no_drop_flag]
 pub struct Soa2<A, B> {
     d0: Unadorned<A>,
@@ -664,15 +672,15 @@ impl<A: Debug, B: Debug> Debug for Soa2<A, B> {
     }
 }
 
-#[unsafe_destructor]
 impl<A, B> Drop for Soa2<A, B> {
     #[inline]
     fn drop(&mut self) {
-        if self.e.cap != 0 {
+        if self.e.cap != 0 && self.e.cap != mem::POST_DROP_USIZE {
             unsafe {
                 self.d0.drop(&self.e);
                 self.d1.drop(&self.e);
             }
+            self.e.cap = 0;
         }
     }
 }
