@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Soa4","A growable struct-of-4-arrays type, with heap allocated contents."]]});

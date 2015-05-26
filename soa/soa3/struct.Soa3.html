@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Soa3` struct in crate `soa`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Soa3">
+
+    <title>soa::soa3::Soa3 - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../index.html'>soa</a>::<wbr><a href='index.html'>soa3</a></p><script>window.sidebarCurrent = {name: 'Soa3', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>soa</a>::<wbr><a href='index.html'>soa3</a>::<wbr><a class='struct' href=''>Soa3</a><wbr></span><span class='out-of-band'><span id='render-detail'>
+            <a id="collapse-all" href="#">[-]</a>&nbsp;<a id="expand-all" href="#">[+]</a>
+        </span><a id='src-2612' href='../../src/soa/soa3.rs.html#24-29'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Soa3&lt;A, B, C&gt; {
+    // some fields omitted
+}</pre><div class='docblock'><p>A growable struct-of-3-arrays type, with heap allocated contents.</p>
+
+<p>This structure is analogous to a <code>Vec&lt;(A, B, C)&gt;</code>, but instead of laying out
+the tuples sequentially in memory, each row gets its own allocation. For
+example, an <code>Soa3&lt;f32, i64, u8&gt;</code> will contain three inner arrays: one of
+<code>f32</code>s, one of <code>i64</code>s, and one of <code>u8</code>.</p>
+
+<p>All data is aligned to 16-bytes. Feel free to do SIMD operations with array
+contents.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;A, B, C&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.new' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h4>
+<div class='docblock'><p>Constructs a new, empty <code>Soa3</code>.</p>
+
+<p>The SoA will not allocate until elements are pushed onto it.</p>
+</div><h4 id='method.with_capacity' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.with_capacity' class='fnname'>with_capacity</a>(capacity: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h4>
+<div class='docblock'><p>Constructs a new, empty <code>Soa3</code> with the specified capacity.</p>
+
+<p>The SoA will be able to hold exactly <code>capacity</code> tuples of elements
+without reallocating.</p>
+
+<p>If <code>capacity</code> is 0, the SoA will not allocate.</p>
+
+<p>It is important to note that this function does not specify the <em>length</em>
+of the soa, but only the <em>capacity</em>.</p>
+</div><h4 id='method.from_raw_parts' class='method'><a class='stability Unmarked' title='No stability level'></a><code>unsafe fn <a href='#method.from_raw_parts' class='fnname'>from_raw_parts</a>(ptra: <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut A</a>, ptrb: <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut B</a>, ptrc: <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut C</a>, len: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, cap: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h4>
+<div class='docblock'><p>Constructs a <code>Soa3</code> directly from the raw components of another.</p>
+
+<p>This is highly unsafe, and no invariants are checked.</p>
+</div><h4 id='method.from_raw_bufs' class='method'><a class='stability Unmarked' title='No stability level'></a><code>unsafe fn <a href='#method.from_raw_bufs' class='fnname'>from_raw_bufs</a>(ptra: <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*const A</a>, ptrb: <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*const B</a>, ptrc: <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*const C</a>, elts: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h4>
+<div class='docblock'><p>Constructs a <code>Soa3</code> by copying the elements from raw pointers.</p>
+
+<p>This function will copy <code>elts</code> contiguous elements from each of the
+pointers into a new allocation owned by the returned <code>Soa3</code>. The elements
+of the buffer are copied without cloning, as if <code>ptr::read()</code> were called
+on them.</p>
+</div><h4 id='method.from_vecs' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.from_vecs' class='fnname'>from_vecs</a>(v0: <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;A&gt;, v1: <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;B&gt;, v2: <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;C&gt;) -&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h4>
+<div class='docblock'><p>Constructs a <code>Soa3</code> directly from vectors of its components.</p>
+
+<p>This function will panic if the lengths of the vectors don&#39;t match.</p>
+
+<p>If the capacity of the vectors don&#39;t match they will be reallocated to
+have matching capacities.</p>
+
+<p>Otherwise, no allocation will be performed and the SoA will only take
+ownership of the elements in the vectors.</p>
+</div><h4 id='method.len' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.len' class='fnname'>len</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
+<div class='docblock'><p>Returns the number of tuples stored in the SoA.</p>
+</div><h4 id='method.is_empty' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns <code>true</code> if the SoA contains no elements.</p>
+</div><h4 id='method.set_len' class='method'><a class='stability Unmarked' title='No stability level'></a><code>unsafe fn <a href='#method.set_len' class='fnname'>set_len</a>(&amp;mut self, len: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</code></h4>
+<div class='docblock'><p>Sets the length of a vector.</p>
+
+<p>This will explicitly set the size of the soa, without actually
+modifying its buffers, so it is up to the caller to ensure that the
+SoA is actually the specified size.</p>
+</div><h4 id='method.capacity' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.capacity' class='fnname'>capacity</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></h4>
+<div class='docblock'><p>Returns the number of elements the SoA can hold without reallocating.</p>
+</div><h4 id='method.reserve' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.reserve' class='fnname'>reserve</a>(&amp;mut self, additional: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</code></h4>
+<div class='docblock'><p>Reserves capacity for at least <code>additional</code> more elements to be inserted
+in the given SoA. The collection may reserve more space to avoid frequent
+reallocations.</p>
+
+<p>Panics if the new capacity overflows <code>usize</code>.</p>
+</div><h4 id='method.reserve_exact' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.reserve_exact' class='fnname'>reserve_exact</a>(&amp;mut self, additional: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</code></h4>
+<div class='docblock'><p>Reserves the minimum capacity for exactly <code>additional</code> more elements to
+be inserted in the given SoA. Does nothing if the capacity is already
+sufficient.</p>
+
+<p>Note that the allocator may give the collection more space than it
+requests. Therefore, capacity can not be relied upon to be precisely
+minimal. Prefer <code>reserve</code> if future insertions are expected.</p>
+
+<p>Panics if the new capacity overflows <code>usize</code>.</p>
+</div><h4 id='method.shrink_to_fit' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.shrink_to_fit' class='fnname'>shrink_to_fit</a>(&amp;mut self)</code></h4>
+<div class='docblock'><p>Shrinks the capacity of the SoA as much as possible.</p>
+
+<p>It will drop down as close as possible to the length, but the allocator
+may still inform the SoA that there is space for a few more elements.</p>
+</div><h4 id='method.truncate' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.truncate' class='fnname'>truncate</a>(&amp;mut self, len: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>)</code></h4>
+<div class='docblock'><p>Shorten a SoA, dropping excess elements.</p>
+
+<p>If <code>len</code> is greater than the soa&#39;s current length, this has no effect.</p>
+</div><h4 id='method.as_mut_slices' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.as_mut_slices' class='fnname'>as_mut_slices</a>&lt;'a&gt;(&amp;'a mut self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a mut [A]</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a mut [B]</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a mut [C]</a>)</a></code></h4>
+<div class='docblock'><p>Returns mutable slices over the SoA&#39;s elements.</p>
+</div><h4 id='method.as_slices' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.as_slices' class='fnname'>as_slices</a>&lt;'a&gt;(&amp;'a self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [A]</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [B]</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'a [C]</a>)</a></code></h4>
+<div class='docblock'><p>Returns slices over the SoA&#39;s elements.</p>
+</div><h4 id='method.iters' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.iters' class='fnname'>iters</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.Iter.html' title='core::slice::Iter'>Iter</a>&lt;A&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.Iter.html' title='core::slice::Iter'>Iter</a>&lt;B&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.Iter.html' title='core::slice::Iter'>Iter</a>&lt;C&gt;)</a></code></h4>
+<div class='docblock'><p>Returns iterators over the SoA&#39;s elements.</p>
+</div><h4 id='method.zip_iter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.zip_iter' class='fnname'>zip_iter</a>&lt;'a&gt;(&amp;'a self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/core/iter/struct.Map.html' title='core::iter::Map'>Map</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/core/iter/struct.Zip.html' title='core::iter::Zip'>Zip</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/core/iter/struct.Zip.html' title='core::iter::Zip'>Zip</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.Iter.html' title='core::slice::Iter'>Iter</a>&lt;'a, A&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.Iter.html' title='core::slice::Iter'>Iter</a>&lt;'a, B&gt;&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.Iter.html' title='core::slice::Iter'>Iter</a>&lt;'a, C&gt;&gt;, fn(<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(&amp;'a A, &amp;'a B)</a>, &amp;'a C)</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(&amp;'a A, &amp;'a B, &amp;'a C)</a>&gt;</code></h4>
+<div class='docblock'><p>Returns a single iterator over the SoA&#39;s elements, zipped up.</p>
+</div><h4 id='method.iters_mut' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.iters_mut' class='fnname'>iters_mut</a>(&amp;mut self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.IterMut.html' title='core::slice::IterMut'>IterMut</a>&lt;A&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.IterMut.html' title='core::slice::IterMut'>IterMut</a>&lt;B&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.IterMut.html' title='core::slice::IterMut'>IterMut</a>&lt;C&gt;)</a></code></h4>
+<div class='docblock'><p>Returns mutable iterators over the SoA&#39;s elements.</p>
+</div><h4 id='method.zip_iter_mut' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.zip_iter_mut' class='fnname'>zip_iter_mut</a>&lt;'a&gt;(&amp;'a mut self) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/core/iter/struct.Map.html' title='core::iter::Map'>Map</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/core/iter/struct.Zip.html' title='core::iter::Zip'>Zip</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/core/iter/struct.Zip.html' title='core::iter::Zip'>Zip</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.IterMut.html' title='core::slice::IterMut'>IterMut</a>&lt;'a, A&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.IterMut.html' title='core::slice::IterMut'>IterMut</a>&lt;'a, B&gt;&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/core/slice/struct.IterMut.html' title='core::slice::IterMut'>IterMut</a>&lt;'a, C&gt;&gt;, fn(<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(&amp;'a mut A, &amp;'a mut B)</a>, &amp;'a mut C)</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(&amp;'a mut A, &amp;'a mut B, &amp;'a mut C)</a>&gt;</code></h4>
+<div class='docblock'><p>Returns a single iterator over the SoA&#39;s elements, zipped up.</p>
+</div><h4 id='method.into_iters' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.into_iters' class='fnname'>into_iters</a>(self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.IntoIter.html' title='collections::vec::IntoIter'>IntoIter</a>&lt;A&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.IntoIter.html' title='collections::vec::IntoIter'>IntoIter</a>&lt;B&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.IntoIter.html' title='collections::vec::IntoIter'>IntoIter</a>&lt;C&gt;)</a></code></h4>
+<div class='docblock'><p>Converts an SoA into iterators for each of its arrays.</p>
+</div><h4 id='method.into_vecs' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.into_vecs' class='fnname'>into_vecs</a>(self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;A&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;B&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;C&gt;)</a></code></h4>
+<div class='docblock'><p>Converts an SoA into <code>Vec</code>s. This will neither allocator nor copy.</p>
+</div><h4 id='method.as_ptrs' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.as_ptrs' class='fnname'>as_ptrs</a>(&amp;self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*const A</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*const B</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*const C</a>)</a></code></h4>
+<div class='docblock'><p>Returns to the start of the data in an SoA.</p>
+</div><h4 id='method.as_mut_ptrs' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.as_mut_ptrs' class='fnname'>as_mut_ptrs</a>(&amp;mut self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut A</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut B</a>, <a href='http://doc.rust-lang.org/nightly/std/primitive.pointer.html'>*mut C</a>)</a></code></h4>
+<div class='docblock'><p>Returns a pair of pointers to the start of the mutable data in an SoA.</p>
+</div><h4 id='method.swap_remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.swap_remove' class='fnname'>swap_remove</a>(&amp;mut self, index: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A, B, C)</a></code></h4>
+<div class='docblock'><p>Removes an element from anywhere in the SoA and returns it, replacing it
+with the last element.</p>
+
+<p>This does not preserve ordering, but is O(1).</p>
+
+<p>Panics if <code>index</code> is out of bounds.</p>
+</div><h4 id='method.insert' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.insert' class='fnname'>insert</a>(&amp;mut self, index: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, element: <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A, B, C)</a>)</code></h4>
+<div class='docblock'><p>Inserts an element at position <code>index</code> within the vector, shifting all
+elements after position <code>index</code> one position to the right.</p>
+
+<p>Panics if <code>index</code> is not between <code>0</code> and the SoA&#39;s length, inclusive.</p>
+</div><h4 id='method.remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.remove' class='fnname'>remove</a>(&amp;mut self, index: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A, B, C)</a></code></h4>
+<div class='docblock'><p>Removes and returns the elements at position <code>index</code> within the SoA,
+shifting all elements after position <code>index</code> one position to the left.</p>
+
+<p>Panics if <code>index</code> is out of bounds.</p>
+</div><h4 id='method.retain' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.retain' class='fnname'>retain</a>&lt;F&gt;(&amp;mut self, f: F) <span class='where'>where F: <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(&amp;A, &amp;B, &amp;C)</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></span></code></h4>
+<div class='docblock'><p>Returns only the element specified by the predicate.</p>
+
+<p>In other words, remove all elements <code>e</code> such that <code>f(&amp;e)</code> returns false.
+This method operates in place and preserves the order of the retained
+elements.</p>
+</div><h4 id='method.push' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.push' class='fnname'>push</a>(&amp;mut self, value: <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A, B, C)</a>)</code></h4>
+<div class='docblock'><p>Appends an element to the back of a collection.</p>
+
+<p>Panics if the number of elements in the SoA overflows a <code>usize</code>.</p>
+</div><h4 id='method.pop' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.pop' class='fnname'>pop</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A, B, C)</a>&gt;</code></h4>
+<div class='docblock'><p>Removes the last element from a SoA and returns it, or <code>None</code> if empty.</p>
+</div><h4 id='method.append' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.append' class='fnname'>append</a>(&amp;mut self, other: &amp;mut Self)</code></h4>
+<div class='docblock'><p>Moves all the elements of <code>other</code> into <code>self</code>, leaving <code>other</code> empty.</p>
+
+<p>Panics if the number of elements in the SoA overflows a <code>usize</code>.</p>
+</div><h4 id='method.clear' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.clear' class='fnname'>clear</a>(&amp;mut self)</code></h4>
+<div class='docblock'><p>Clears the SoA, removing all values.</p>
+</div><h4 id='method.extend' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.extend' class='fnname'>extend</a>&lt;I0, I1, I2&gt;(&amp;mut self, i0: I0, i1: I1, i2: I2) <span class='where'>where I0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a>&lt;Item=A&gt;, I1: <a class='trait' href='http://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a>&lt;Item=B&gt;, I2: <a class='trait' href='http://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a>&lt;Item=C&gt;</span></code></h4>
+<div class='docblock'><p>Extends the SoA with the elements yielded by arbitrary iterators.</p>
+
+<p>Panics (and leaks memory!) if the iterators yield a different number of
+elements.</p>
+</div><h4 id='method.from_iters' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.from_iters' class='fnname'>from_iters</a>&lt;I0, I1, I2&gt;(i0: I0, i1: I1, i2: I2) -&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt; <span class='where'>where I0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a>&lt;Item=A&gt;, I1: <a class='trait' href='http://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a>&lt;Item=B&gt;, I2: <a class='trait' href='http://doc.rust-lang.org/nightly/core/iter/trait.Iterator.html' title='core::iter::Iterator'>Iterator</a>&lt;Item=C&gt;</span></code></h4>
+<div class='docblock'><p>Constructs an <code>Soa3</code> with elements yielded by arbitrary iterators.</p>
+
+<p>Panics (and leaks memory!) if the iterators yield a different number of
+elements.</p>
+</div></div><h3 class='impl'><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;A: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>, B: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>, C: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.resize' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.resize' class='fnname'>resize</a>(&amp;mut self, new_len: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>, value: <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A, B, C)</a>)</code></h4>
+<div class='docblock'><p>Resizes the SoA in-place so that <code>len()</code> is equal to <code>new_len</code>.</p>
+
+<p>Calls either <code>extend()</code> or <code>truncate()</code> depending on whether <code>new_len</code> is
+larger than the current value of <code>len()</code> or not.</p>
+</div><h4 id='method.push_all' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#method.push_all' class='fnname'>push_all</a>(&amp;mut self, x0: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[A]</a>, x1: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[B]</a>, x2: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[C]</a>)</code></h4>
+<div class='docblock'><p>Appends all elements in slices to the SoA.</p>
+
+<p>Iterates over the slices, clones each element, and then appends them to
+this SoA. The slices are traversed one at a time, in order.</p>
+
+<p>Panics if the slices are of different lengths.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>, B: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>, C: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.clone' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h4>
+<h4 id='method.clone_from' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, other: &amp;<a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;)</code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A: <a class='trait' href='http://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a>, B: <a class='trait' href='http://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a>, C: <a class='trait' href='http://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a>&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a> for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.hash' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash' class='fnname'>hash</a>&lt;H: <a class='trait' href='http://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html' title='core::hash::Hasher'>Hasher</a>&gt;(&amp;self, state: &amp;mut H)</code></h4>
+<h4 id='method.hash_slice' class='method'><a class='stability Unstable' title='Unstable: module was recently redesigned'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/hash/trait.Hash.html#method.hash_slice' class='fnname'>hash_slice</a>&lt;H&gt;(data: <a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[Self]</a>, state: &amp;mut H) <span class='where'>where H: <a class='trait' href='http://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html' title='core::hash::Hasher'>Hasher</a></span></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A0, B0, C0, A1, B1, C1&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;<a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A1, B1, C1&gt;&gt; for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A0, B0, C0&gt; <span class='where'>where A0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;A1&gt;, B0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;B1&gt;, C0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;C1&gt;</span></code></h3><div class='impl-items'><h4 id='method.eq' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.eq' class='fnname'>eq</a>(&amp;self, other: &amp;<a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A1, B1, C1&gt;) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.ne' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: &amp;<a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A1, B1, C1&gt;) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A0, B0, C0, A1, B1, C1&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a>&gt;&gt; for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A0, B0, C0&gt; <span class='where'>where A0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;A1&gt;, B0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;B1&gt;, C0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;C1&gt;</span></code></h3><div class='impl-items'><h4 id='method.eq' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.eq' class='fnname'>eq</a>(&amp;self, other: &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a>&gt;) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.ne' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: &amp;<a class='struct' href='http://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a>&gt;) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;'b, A0, B0, C0, A1, B1, C1&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'b [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>&gt; for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A0, B0, C0&gt; <span class='where'>where A0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;A1&gt;, B0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;B1&gt;, C0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;C1&gt;</span></code></h3><div class='impl-items'><h4 id='method.eq' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.eq' class='fnname'>eq</a>(&amp;self, other: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'b [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.ne' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'b [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;'b, A0, B0, C0, A1, B1, C1&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'b mut [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>&gt; for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A0, B0, C0&gt; <span class='where'>where A0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;A1&gt;, B0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;B1&gt;, C0: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a>&lt;C1&gt;</span></code></h3><div class='impl-items'><h4 id='method.eq' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.eq' class='fnname'>eq</a>(&amp;self, other: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'b mut [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.ne' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'b mut [</a><a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(A1, B1, C1)</a><a href='http://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html' title='core::cmp::PartialOrd'>PartialOrd</a>, B: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html' title='core::cmp::PartialOrd'>PartialOrd</a>, C: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html' title='core::cmp::PartialOrd'>PartialOrd</a>&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html' title='core::cmp::PartialOrd'>PartialOrd</a> for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.partial_cmp' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.partial_cmp' class='fnname'>partial_cmp</a>(&amp;self, other: &amp;<a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html' title='core::cmp::Ordering'>Ordering</a>&gt;</code></h4>
+<h4 id='method.lt' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.lt' class='fnname'>lt</a>(&amp;self, other: &amp;Rhs) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.le' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.le' class='fnname'>le</a>(&amp;self, other: &amp;Rhs) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.gt' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.gt' class='fnname'>gt</a>(&amp;self, other: &amp;Rhs) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.ge' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.ge' class='fnname'>ge</a>(&amp;self, other: &amp;Rhs) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a>, B: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a>, C: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a>&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'></div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, B: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, C: <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a> for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.cmp' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html#method.cmp' class='fnname'>cmp</a>(&amp;self, other: &amp;<a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html' title='core::cmp::Ordering'>Ordering</a></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A, B, C&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a> for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.default' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/default/trait.Default.html#method.default' class='fnname'>default</a>() -&gt; <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A: <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a>, B: <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a>, C: <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a>&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class='struct' href='http://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='http://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div><h3 class='impl'><a class='stability Stable' title='Stable'></a><code>impl&lt;A, B, C&gt; <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.Drop.html' title='core::ops::Drop'>Drop</a> for <a class='struct' href='../../soa/soa3/struct.Soa3.html' title='soa::soa3::Soa3'>Soa3</a>&lt;A, B, C&gt;</code></h3><div class='impl-items'><h4 id='method.drop' class='method'><a class='stability Stable' title='Stable'></a><code>fn <a href='http://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#method.drop' class='fnname'>drop</a>(&amp;mut self)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "soa";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>
